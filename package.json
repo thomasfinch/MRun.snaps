@@ -1,0 +1,16 @@
+{
+  "name": "mrun.snaps",
+  "version": "0.0.0",
+  "description": "MRun snapchat thing",
+  "main": "mrunsnaps.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thomas Finch",
+  "license": "ISC",
+  "dependencies": {
+    "node-snapchat": "0.0.2",
+    "fs": "0.0.2",
+    "events": "^1.0.2"
+  }
+}
