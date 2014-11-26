@@ -10,20 +10,23 @@ if(!fs.existsSync('./images')) {
     fs.mkdirSync('./images');
 }
 
-downloadNewSnaps();
+login();
 
-function downloadNewSnaps() {
-	client.login(credentials.username, credentials.password).then(function(data) {
-		console.log(new Date()+': '+'Logged in');
+function login() {
+	//Check if logged in (by test call)
+	//If so, download any new snaps, otherwise log in
 
-	    // Handle any problems, such as wrong password
-	    if (typeof data.snaps === 'undefined') {
-	        console.error(data);
+	client.getSnaps().then(function(snaps) {
+		console.log(new Date()+': '+'Checking for new snaps');
+
+		// Handle any problems, such as wrong password
+	    if (typeof snaps === 'undefined') {
+	        console.error(snaps);
 	        return;
 	    }
 
 	    var snapsCount = 0;
-	    data.snaps.forEach(function(snap) {
+	    snaps.forEach(function(snap) {
 	    	if (typeof snap.sn !== 'undefined' && typeof snap.t !== 'undefined' && snap.st == 1 && (snap.m == 0 || snap.m == 1 || snap.m == 2))
 	    		snapsCount++;
 	    });
@@ -35,7 +38,7 @@ function downloadNewSnaps() {
 
 	    var snapsDownloaded = 0;
 	    // Loop through the latest snaps
-	    data.snaps.forEach(function(snap) {
+	    snaps.forEach(function(snap) {
 	        // Make sure the snap item is unopened and sent to you (not sent by you)
 	        if (typeof snap.sn !== 'undefined' && typeof snap.t !== 'undefined' && snap.st == 1 && (snap.m == 0 || snap.m == 1 || snap.m == 2)) {
 	            console.log(new Date()+': '+'Saving snap from ' + snap.sn + '...');
@@ -62,15 +65,24 @@ function downloadNewSnaps() {
 			    });
 	        }
 	    });
+
+	}, function(err) {
+		client.login(credentials.username, credentials.password).then(function(data) {
+			console.log(new Date()+': '+'Logged in');
+			login(); //Get new snaps now that we're logged in
+		}, function(err) {
+			consolelog(new Date()+': '+'Error logging in: '+err);
+		});
 	});
 
-	setTimeout(downloadNewSnaps, 60000); //Check for and download new snaps every 60 seconds
+	setTimeout(login, Math.floor((Math.random() * 50000)) + 45000); //Check for and download new snaps every 45-80 seconds
 }
 
 function uploadSnapsToStory() {
 	var snapFiles = fs.readdirSync('./images/');
 	if (snapFiles.indexOf('.DS_Store') != -1)
 		snapFiles.splice(snapFiles.indexOf('.DS_Store'), 1); //Remove .DS_store from the files list (if on a Mac)
+	var numUploaded = 0;
 
 	snapFiles.forEach(function(filename) {
 		console.log(new Date()+': '+'Uploading snap: ' + filename);
@@ -85,6 +97,9 @@ function uploadSnapsToStory() {
             client.addToStory(mediaId, viewingTime).catch(function(result) {
         		console.log(new Date()+': '+'Sent snap ' + filename + ' to story');
             	fs.unlinkSync('./images/' + filename); //Delete the downloaded snap
+            	if (++numUploaded == snapFiles.length) {
+            		console.log(new Date()+': '+'Done uploading snaps');
+            	}
             });
 
 		});
