@@ -1,3 +1,4 @@
 images
-credentials.js
+credentials.*
 log.txt
+.DS_Store
