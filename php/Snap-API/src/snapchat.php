@@ -327,7 +327,7 @@ class Snapchat extends SnapchatAgent {
 
 				return $result;
 		} else {
-				$this->openAppEvent();
+				return $this->openAppEvent();
 		}
 	}
 
@@ -908,7 +908,7 @@ class Snapchat extends SnapchatAgent {
 			{
 				$id = $snap->id;
 				$from = $snap->sender;
-				$time = $snap->sent;
+				$time = $snap->time;
 
 				$this->getMedia($id, $from, $time);
 			}
@@ -1466,7 +1466,7 @@ class Snapchat extends SnapchatAgent {
 				{
 					mkdir($path);
 				}
-				$file = $path . DIRECTORY_SEPARATOR . date("Y-m-d H-i", (int) ($time / 1000));
+				$file = $path . DIRECTORY_SEPARATOR . date("Y-m-d_h-i-s") . " " . $time;
 				file_put_contents($file, $result);
 				$finfo = finfo_open(FILEINFO_MIME_TYPE);
 				$finfo = finfo_file($finfo, $file);
