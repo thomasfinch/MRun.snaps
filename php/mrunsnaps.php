@@ -7,14 +7,16 @@
 	define('MAX_CHECK_TIME', 300); //5 minutes in seconds
 	$snapchat = new Snapchat($snapchat_username, $gmail_username, $gmail_password, false);
 
+	//Start the program
+	logMessage('Starting MRun.snaps');
+	runLoop();
+
+	//Prints a log message with the date at the beginning
 	function logMessage($message) {
 		echo date('D M d Y h:i:s A') . ': ' . $message . "\n";
 	}
 
-	function returnfive() {
-		return 5;
-	}
-
+	//Logs into snapchat
 	function login() {
 		global $snapchat;
 		global $snapchat_password;
@@ -32,6 +34,8 @@
 		}
 	}
 
+	//Main run loop, continually checks for new snaps and downloads them then puts them on the story.
+	//	Checks random amounts of time between 4.5 and 5 minutes.
 	function runLoop() {
 		global $snapchat;
 		// while (true)
@@ -54,11 +58,11 @@
 
 			//Check how many snaps were downloaded
 			$savedSnaps = array();
-			$folders = array();
+			$snapFolders = array();
 			$scannedFiles = scandir('./Snap-API/src/snaps'); //Scans all the username folders within the snaps directory
 			foreach ($scannedFiles as $folder) {
 				if (!in_array($folder, array('.','..')) && is_dir('./Snap-API/src/snaps/' . $folder)) {
-					$folders[] = $folder;
+					$snapFolders[] = $folder;
 					$snapFiles = scandir('./Snap-API/src/snaps/' . $folder); //Scans for snaps within each username folder
 					foreach ($snapFiles as $file) {
 						if (!in_array($file, array('.','..','.DS_Store'))) {
@@ -88,7 +92,7 @@
 				logMessage('Done uploading');
 
 				//Delete all username snap folders
-				foreach ($folders as $folder) {
+				foreach ($snapFolders as $folder) {
 					rmdir('./Snap-API/src/snaps/' . $folder);
 				}
 			}
@@ -100,9 +104,5 @@
 			// sleep(rand(MIN_CHECK_TIME, MAX_CHECK_TIME));
 		}
 	}
-
-	logMessage('Starting MRun.snaps');
-	// login();
-	runLoop();	
 
 ?>
