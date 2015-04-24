@@ -38,7 +38,7 @@
 	//	Checks random amounts of time between 4.5 and 5 minutes.
 	function runLoop() {
 		global $snapchat;
-		// while (true)
+		while (true)
 		{
 			//Check for and download new snaps
 			logMessage('Getting new snaps');
@@ -101,7 +101,7 @@
 			}
 
 
-			// sleep(rand(MIN_CHECK_TIME, MAX_CHECK_TIME));
+			sleep(rand(MIN_CHECK_TIME, MAX_CHECK_TIME));
 		}
 	}
 
