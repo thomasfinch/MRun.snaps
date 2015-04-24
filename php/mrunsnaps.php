@@ -3,8 +3,8 @@
 	include('credentials.php');
 	require_once('Snap-API/src/snapchat.php');
 	date_default_timezone_set('America/Detroit');
-	define('MIN_CHECK_TIME', 270); //4.5 minutes in seconds
-	define('MAX_CHECK_TIME', 300); //5 minutes in seconds
+	define('MIN_CHECK_TIME', 60); //1 minutes in seconds
+	define('MAX_CHECK_TIME', 120); //2 minutes in seconds
 	$snapchat = new Snapchat($snapchat_username, $gmail_username, $gmail_password, false);
 
 	//Start the program
